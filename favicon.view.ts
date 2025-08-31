@@ -1,16 +1,23 @@
 namespace $ {
 	/** Плагин, который ставит favicon из переданного $mol_icon_* и подобных */
 	export class $bog_favicon extends $mol_plugin {
+		// сюда передаем Icon <= icon $mol_icon_waze
 		@$mol_mem
-		Icon(next?: { path(): string }): { path(): string } {
+		Icon(next?: $mol_view): $mol_view {
 			if (next !== undefined) return next as never
 			throw new Error('[bog_favicon] Icon is required: use `Icon <= icon $mol_icon_*` in view.tree')
 		}
 
 		@$mol_mem
 		favicon_data(): string {
-			const path = this.Icon().path()
-			const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="${path}"/></svg>`
+			const icon = this.Icon()
+			const node = icon.dom_tree() as SVGSVGElement
+
+			if (!node.getAttribute('xmlns')) {
+				node.setAttribute('xmlns', 'http://www.w3.org/2000/svg')
+			}
+
+			const svg = (node as any).outerHTML as string
 			return 'data:image/svg+xml,' + encodeURIComponent(svg)
 		}
 
