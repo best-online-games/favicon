@@ -19,16 +19,16 @@ namespace $ {
 			if (!doc) return
 
 			const href = this.favicon_data()
-			for (const rel of ['icon', 'shortcut icon', 'apple-touch-icon'] as const) {
-				let link = doc.querySelector(`link[rel="${rel}"]`) as HTMLLinkElement | null
-				if (!link) {
-					link = doc.createElement('link')
-					link.rel = rel
-					doc.head.appendChild(link)
-				}
-				link.type = 'image/svg+xml'
-				if (link.href !== href) link.href = href
+
+			let link = doc.querySelector('link[rel="icon"]') as HTMLLinkElement | null
+			if (!link) {
+				link = doc.createElement('link')
+				link.rel = 'icon'
+				doc.head.appendChild(link)
 			}
+
+			link.type = 'image/svg+xml'
+			if (link.href !== href) link.href = href
 		}
 
 		override auto() {
